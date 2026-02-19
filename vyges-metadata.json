@@ -1,10 +1,45 @@
 {
+  "$schema": "https://vyges.com/schema/v1/vyges-metadata.schema.json",
+  "x-version": "1.0.0",
   "name": "opentitan-i2c",
   "version": "0.1.0",
+  "description": "I2C controller. Inter-Integrated Circuit serial communication peripheral from OpenTitan.",
   "license": "Apache-2.0",
+  "template": "opentitan-ip-template@1.0.0",
+  "target": ["fpga", "asic"],
+  "design_type": ["digital"],
+  "maturity": "imported",
+  "created": "2026-02-19T05:47:14Z",
+  "updated": "2026-02-19T05:47:14Z",
   "source": {
     "type": "git",
     "url": "https://github.com/lowRISC/opentitan",
-    "commit": "304378684dfcf5be73bbd14faffa71790793d8c6"
+    "commit": "304378684dfcf5be73bbd14faffa71790793d8c6",
+    "ip_path": "hw/ip/i2c",
+    "private": false
+  },
+  "interfaces": [
+    {
+      "type": "bus",
+      "direction": "input",
+      "protocol": "TL-UL",
+      "width": 32,
+      "description": "TL-UL host interface for register access"
+    },
+    {
+      "type": "bus",
+      "direction": "output",
+      "protocol": "I2C",
+      "description": "I2C host; connects to I2C bus (SCL, SDA)"
+    }
+  ],
+  "categories": {
+    "primary": "communication",
+    "secondary": ["i2c", "serial", "peripheral"],
+    "tags": ["i2c", "opentitan", "lowrisc-opentitan", "communication", "serial"]
+  },
+  "community": {
+    "issues": "https://github.com/vyges-ip/opentitan-i2c/issues",
+    "contributions": "https://github.com/vyges-ip/opentitan-i2c/pulls"
   }
 }
