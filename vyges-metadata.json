@@ -6,17 +6,35 @@
   "description": "I2C controller. Inter-Integrated Circuit serial communication peripheral from OpenTitan.",
   "license": "Apache-2.0",
   "template": "opentitan-ip-template@1.0.0",
-  "target": ["fpga", "asic"],
-  "design_type": ["digital"],
+  "target": [
+    "fpga",
+    "asic"
+  ],
+  "design_type": [
+    "digital"
+  ],
   "maturity": "imported",
   "created": "2026-02-19T05:47:14Z",
-  "updated": "2026-02-19T05:47:14Z",
+  "updated": "2026-02-19T06:03:45Z",
   "source": {
     "type": "git",
     "url": "https://github.com/lowRISC/opentitan",
     "commit": "304378684dfcf5be73bbd14faffa71790793d8c6",
     "ip_path": "hw/ip/i2c",
-    "private": false
+    "private": false,
+    "rtl_path": "rtl",
+    "rtl_files": [
+      "rtl/i2c.sv",
+      "rtl/i2c_bus_monitor.sv",
+      "rtl/i2c_controller_fsm.sv",
+      "rtl/i2c_core.sv",
+      "rtl/i2c_fifo_sync_sram_adapter.sv",
+      "rtl/i2c_fifos.sv",
+      "rtl/i2c_pkg.sv",
+      "rtl/i2c_reg_pkg.sv",
+      "rtl/i2c_reg_top.sv",
+      "rtl/i2c_target_fsm.sv"
+    ]
   },
   "interfaces": [
     {
@@ -35,8 +53,18 @@
   ],
   "categories": {
     "primary": "communication",
-    "secondary": ["i2c", "serial", "peripheral"],
-    "tags": ["i2c", "opentitan", "lowrisc-opentitan", "communication", "serial"]
+    "secondary": [
+      "i2c",
+      "serial",
+      "peripheral"
+    ],
+    "tags": [
+      "i2c",
+      "opentitan",
+      "lowrisc-opentitan",
+      "communication",
+      "serial"
+    ]
   },
   "community": {
     "issues": "https://github.com/vyges-ip/opentitan-i2c/issues",
