@@ -15,7 +15,7 @@
   ],
   "maturity": "imported",
   "created": "2026-02-19T05:47:14Z",
-  "updated": "2026-02-19T06:12:02Z",
+  "updated": "2026-02-19T06:22:56Z",
   "source": {
     "type": "git",
     "url": "https://github.com/lowRISC/opentitan",
@@ -69,5 +69,11 @@
   "community": {
     "issues": "https://github.com/vyges-ip/opentitan-i2c/issues",
     "contributions": "https://github.com/vyges-ip/opentitan-i2c/pulls"
+  },
+  "branding": {
+    "provider": "Vyges IP Catalog",
+    "logo": "https://vyges.com/assets/logo.svg",
+    "website": "https://github.com/vyges-ip/opentitan-i2c",
+    "usage": "Use of the logo is permitted for attribution or compatibility references only."
   }
 }
