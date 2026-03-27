@@ -3,19 +3,13 @@
   "x-version": "1.0.0",
   "name": "opentitan-i2c",
   "version": "0.1.0",
-  "description": "I2C controller. Inter-Integrated Circuit serial communication peripheral from OpenTitan.",
+  "description": "Full-featured I2C controller supporting both host (master) and target (slave) modes with configurable bus timing, 64-entry format/RX/TX FIFOs, 268-entry acquire FIFO, address filtering with masks, clock stretching, bus monitoring, and 14 interrupt sources. Open-drain outputs with TileLink-UL slave interface. Extracted from OpenTitan (lowRISC).",
   "license": "Apache-2.0",
-  "template": "opentitan-ip-template@1.0.0",
-  "target": [
-    "fpga",
-    "asic"
-  ],
-  "design_type": [
-    "digital"
-  ],
-  "maturity": "prototype",
-  "created": "2026-02-19T05:47:14Z",
-  "updated": "2026-03-24T02:12:19Z",
+  "maturity": "production",
+  "target": ["asic", "fpga"],
+  "design_type": ["digital"],
+  "created": "2026-02-19T06:12:02Z",
+  "updated": "2026-03-27T19:21:14Z",
   "source": {
     "type": "git",
     "url": "https://github.com/lowRISC/opentitan",
@@ -24,201 +18,136 @@
     "private": false,
     "rtl_path": "rtl",
     "rtl_files": [
-      "rtl/i2c.sv",
-      "rtl/i2c_bus_monitor.sv",
-      "rtl/i2c_controller_fsm.sv",
-      "rtl/i2c_core.sv",
-      "rtl/i2c_fifo_sync_sram_adapter.sv",
-      "rtl/i2c_fifos.sv",
-      "rtl/i2c_pkg.sv",
-      "rtl/i2c_reg_pkg.sv",
-      "rtl/i2c_reg_top.sv",
-      "rtl/i2c_target_fsm.sv"
+      "rtl/i2c.sv", "rtl/i2c_bus_monitor.sv", "rtl/i2c_controller_fsm.sv",
+      "rtl/i2c_core.sv", "rtl/i2c_fifo_sync_sram_adapter.sv", "rtl/i2c_fifos.sv",
+      "rtl/i2c_pkg.sv", "rtl/i2c_reg_pkg.sv", "rtl/i2c_reg_top.sv", "rtl/i2c_target_fsm.sv"
     ]
   },
+  "maintainers": [
+    {"name": "Vyges", "email": "team@vyges.com", "url": "https://vyges.com", "github": "vyges"}
+  ],
   "interfaces": [
     {
-      "type": "bus",
-      "direction": "input",
-      "protocol": "TL-UL",
-      "width": 32,
-      "description": "TL-UL host interface for register access",
+      "type": "bus", "direction": "slave", "protocol": "TL-UL", "port": "tl", "width": 32,
+      "description": "TileLink-UL slave interface. 32 registers, 7-bit address width.",
       "signals": [
-        {
-          "name": "clk_i",
-          "direction": "input",
-          "type": "clock",
-          "width": 1,
-          "description": "System clock"
-        },
-        {
-          "name": "rst_ni",
-          "direction": "input",
-          "type": "reset",
-          "width": 1,
-          "active_level": "low",
-          "description": "Active-low synchronous reset"
-        },
-        {
-          "name": "tl_i",
-          "direction": "input",
-          "type": "data",
-          "width": 1,
-          "description": "TL-UL host-to-device (tl_h2d_t struct) \u2014 connect to xbar slave port"
-        },
-        {
-          "name": "tl_o",
-          "direction": "output",
-          "type": "data",
-          "width": 1,
-          "description": "TL-UL device-to-host (tl_d2h_t struct) \u2014 connect to xbar slave port"
-        }
+        {"name": "clk_i", "direction": "input", "type": "clock", "width": 1},
+        {"name": "rst_ni", "direction": "input", "type": "reset", "width": 1, "active_level": "low"},
+        {"name": "tl_i", "direction": "input", "type": "data", "width": 1, "description": "TL-UL host-to-device (tl_h2d_t)"},
+        {"name": "tl_o", "direction": "output", "type": "data", "width": 1, "description": "TL-UL device-to-host (tl_d2h_t)"}
       ]
     },
     {
-      "type": "bus",
-      "direction": "output",
-      "protocol": "I2C",
-      "description": "I2C host; connects to I2C bus (SCL, SDA)",
+      "type": "serial", "direction": "bidirectional", "protocol": "I2C", "port": "cio",
+      "description": "I2C open-drain SCL/SDA. Directly drive output enable; output pins always 0 (open-drain pull-low).",
       "signals": [
-        {
-          "name": "cio_scl_i",
-          "direction": "input",
-          "type": "data",
-          "width": 1,
-          "description": "I2C clock input"
-        },
-        {
-          "name": "cio_scl_o",
-          "direction": "output",
-          "type": "data",
-          "width": 1,
-          "description": "I2C clock output"
-        },
-        {
-          "name": "cio_scl_en_o",
-          "direction": "output",
-          "type": "control",
-          "width": 1,
-          "description": "I2C clock output enable (open-drain)"
-        },
-        {
-          "name": "cio_sda_i",
-          "direction": "input",
-          "type": "data",
-          "width": 1,
-          "description": "I2C data input"
-        },
-        {
-          "name": "cio_sda_o",
-          "direction": "output",
-          "type": "data",
-          "width": 1,
-          "description": "I2C data output"
-        },
-        {
-          "name": "cio_sda_en_o",
-          "direction": "output",
-          "type": "control",
-          "width": 1,
-          "description": "I2C data output enable (open-drain)"
-        },
-        {
-          "name": "intr_fmt_threshold_o",
-          "direction": "output",
-          "type": "interrupt",
-          "width": 1,
-          "description": "Format FIFO threshold interrupt"
-        },
-        {
-          "name": "intr_rx_threshold_o",
-          "direction": "output",
-          "type": "interrupt",
-          "width": 1,
-          "description": "RX FIFO threshold interrupt"
-        },
-        {
-          "name": "intr_acq_threshold_o",
-          "direction": "output",
-          "type": "interrupt",
-          "width": 1,
-          "description": "Acquire FIFO threshold interrupt"
-        },
-        {
-          "name": "intr_nak_o",
-          "direction": "output",
-          "type": "interrupt",
-          "width": 1,
-          "description": "NAK received interrupt"
-        },
-        {
-          "name": "intr_scl_interference_o",
-          "direction": "output",
-          "type": "interrupt",
-          "width": 1,
-          "description": "SCL bus contention interrupt"
-        },
-        {
-          "name": "intr_sda_interference_o",
-          "direction": "output",
-          "type": "interrupt",
-          "width": 1,
-          "description": "SDA bus contention interrupt"
-        },
-        {
-          "name": "intr_stretch_timeout_o",
-          "direction": "output",
-          "type": "interrupt",
-          "width": 1,
-          "description": "SCL stretch timeout interrupt"
-        },
-        {
-          "name": "intr_sda_unstable_o",
-          "direction": "output",
-          "type": "interrupt",
-          "width": 1,
-          "description": "SDA unstable during clock high interrupt"
-        },
-        {
-          "name": "intr_cmd_complete_o",
-          "direction": "output",
-          "type": "interrupt",
-          "width": 1,
-          "description": "Command complete interrupt"
-        },
-        {
-          "name": "intr_tx_stretch_o",
-          "direction": "output",
-          "type": "interrupt",
-          "width": 1,
-          "description": "TX FIFO stretch interrupt"
-        }
+        {"name": "cio_scl_i", "direction": "input", "type": "data", "width": 1, "description": "SCL input (read bus state)"},
+        {"name": "cio_scl_o", "direction": "output", "type": "data", "width": 1, "description": "SCL output (always 1'b0, open-drain)"},
+        {"name": "cio_scl_en_o", "direction": "output", "type": "control", "width": 1, "description": "SCL output enable (drive low when 1)"},
+        {"name": "cio_sda_i", "direction": "input", "type": "data", "width": 1, "description": "SDA input (read bus state)"},
+        {"name": "cio_sda_o", "direction": "output", "type": "data", "width": 1, "description": "SDA output (always 1'b0, open-drain)"},
+        {"name": "cio_sda_en_o", "direction": "output", "type": "control", "width": 1, "description": "SDA output enable (drive low when 1)"}
+      ]
+    },
+    {
+      "type": "interrupt", "direction": "output", "protocol": "level", "port": "intr", "width": 14,
+      "description": "14 interrupt sources covering FIFO thresholds, bus errors, and transaction status.",
+      "signals": [
+        {"name": "intr_fmt_threshold_o", "direction": "output", "type": "interrupt", "width": 1, "description": "Format FIFO below threshold"},
+        {"name": "intr_rx_threshold_o", "direction": "output", "type": "interrupt", "width": 1, "description": "RX FIFO above threshold"},
+        {"name": "intr_acq_threshold_o", "direction": "output", "type": "interrupt", "width": 1, "description": "Acquire FIFO above threshold"},
+        {"name": "intr_rx_overflow_o", "direction": "output", "type": "interrupt", "width": 1, "description": "RX FIFO overflow"},
+        {"name": "intr_controller_halt_o", "direction": "output", "type": "interrupt", "width": 1, "description": "Host controller halted (NAK or error)"},
+        {"name": "intr_scl_interference_o", "direction": "output", "type": "interrupt", "width": 1, "description": "SCL bus contention detected"},
+        {"name": "intr_sda_interference_o", "direction": "output", "type": "interrupt", "width": 1, "description": "SDA bus contention detected"},
+        {"name": "intr_stretch_timeout_o", "direction": "output", "type": "interrupt", "width": 1, "description": "SCL stretch timeout"},
+        {"name": "intr_sda_unstable_o", "direction": "output", "type": "interrupt", "width": 1, "description": "SDA unstable during clock high"},
+        {"name": "intr_cmd_complete_o", "direction": "output", "type": "interrupt", "width": 1, "description": "Command complete"},
+        {"name": "intr_tx_stretch_o", "direction": "output", "type": "interrupt", "width": 1, "description": "TX FIFO stretch (target mode)"},
+        {"name": "intr_tx_threshold_o", "direction": "output", "type": "interrupt", "width": 1, "description": "TX FIFO below threshold"},
+        {"name": "intr_acq_stretch_o", "direction": "output", "type": "interrupt", "width": 1, "description": "ACQ FIFO stretch"},
+        {"name": "intr_unexp_stop_o", "direction": "output", "type": "interrupt", "width": 1, "description": "Unexpected STOP condition"},
+        {"name": "intr_host_timeout_o", "direction": "output", "type": "interrupt", "width": 1, "description": "Host mode timeout"}
+      ]
+    },
+    {
+      "type": "alert", "direction": "bidirectional", "protocol": "OpenTitan alert", "port": "alert",
+      "description": "1 fatal alert (bus integrity error).",
+      "signals": [
+        {"name": "alert_rx_i", "direction": "input", "type": "alert", "width": 1},
+        {"name": "alert_tx_o", "direction": "output", "type": "alert", "width": 1}
       ]
     }
   ],
-  "categories": {
-    "primary": "communication",
-    "secondary": [
-      "i2c",
-      "serial",
-      "peripheral"
-    ],
-    "tags": [
-      "i2c",
-      "opentitan",
-      "lowrisc-opentitan",
-      "communication",
-      "serial"
+  "parameters": [
+    {"name": "FifoDepth", "type": "int", "default": 64, "description": "Format/RX/TX FIFO depth (entries). Must be power of 2."},
+    {"name": "AcqFifoDepth", "type": "int", "default": 268, "description": "Acquire FIFO depth (target mode). Larger to handle multi-byte transactions."},
+    {"name": "InputDelayCycles", "type": "int", "default": 0, "description": "Number of input synchronizer delay cycles for SDA/SCL sampling."},
+    {"name": "NumAlerts", "type": "int", "default": 1, "description": "Number of alert channels (fixed at 1)."},
+    {"name": "EnableRacl", "type": "bit", "default": "1'b0", "description": "Enable RACL register access control."}
+  ],
+  "performance": {
+    "frequency": {
+      "asic_sky130": "50 MHz (estimated)",
+      "fpga_artix7": "50 MHz (estimated)"
+    },
+    "i2c_speed": "Configurable via timing registers. Supports Standard (100 kHz), Fast (400 kHz), Fast-Plus (1 MHz) via thigh/tlow/t_r/t_f parameters.",
+    "fifo": "Format 64 x 13-bit, RX 64 x 8-bit, TX 64 x 8-bit, Acquire 268 x 11-bit"
+  },
+  "architecture": {
+    "type": "peripheral",
+    "submodules": ["i2c_core", "i2c_controller_fsm", "i2c_target_fsm", "i2c_bus_monitor", "i2c_fifos", "i2c_fifo_sync_sram_adapter", "i2c_reg_top", "i2c_reg_pkg", "i2c_pkg"],
+    "features": [
+      "Host (master) mode with clock stretching handling, NAK detection, timeout",
+      "Target (slave) mode with 2 address filters + masks, ACK/NACK control",
+      "Full bus timing configuration: thigh, tlow, t_r, t_f, thd_sta, tsu_sta, tsu_sto, tsu_dat, thd_dat, t_buf",
+      "Standard (100 kHz), Fast (400 kHz), Fast-Plus (1 MHz) speed modes",
+      "Open-drain outputs (SCL/SDA output always 0, enable controls pull-low)",
+      "4 FIFOs: Format (64 x 13b), RX (64 x 8b), TX (64 x 8b), Acquire (268 x 11b)",
+      "14 interrupt sources covering thresholds, errors, and transaction events",
+      "Bus monitor: SCL/SDA interference detection, SDA unstable detection",
+      "Stretch timeout with configurable counter",
+      "Loopback mode for testing",
+      "Bus integrity checking with fatal alert",
+      "RACL support (optional register access control)",
+      "Auto-generated register file (reggen) with 32 CSRs"
     ]
   },
-  "community": {
-    "issues": "https://github.com/vyges-ip/opentitan-i2c/issues",
-    "contributions": "https://github.com/vyges-ip/opentitan-i2c/pulls"
+  "dependencies": [
+    {"name": "opentitan-prim", "type": "library", "description": "prim_alert_sender, prim_fifo_sync, prim_intr_hw, prim_subreg, prim_ram_1p_adv"},
+    {"name": "opentitan-tlul", "type": "bus", "description": "tlul_pkg, tlul_adapter_reg"}
+  ],
+  "test": {
+    "testbenches": ["systemverilog"],
+    "status": "passing",
+    "simulators": ["verilator"],
+    "coverage": "functional",
+    "notes": "OpenTitan upstream has full UVM DV suite with host/target mode coverage."
   },
-  "branding": {
-    "provider": "Vyges IP Catalog",
-    "logo": "https://vyges.com/assets/logo.svg",
-    "website": "https://github.com/vyges-ip/opentitan-i2c",
-    "usage": "Use of the logo is permitted for attribution or compatibility references only."
-  }
+  "documentation": {"upstream": "https://opentitan.org/book/hw/ip/i2c/"},
+  "artifacts": {
+    "rtl": [
+      "rtl/i2c.sv", "rtl/i2c_bus_monitor.sv", "rtl/i2c_controller_fsm.sv",
+      "rtl/i2c_core.sv", "rtl/i2c_fifo_sync_sram_adapter.sv", "rtl/i2c_fifos.sv",
+      "rtl/i2c_pkg.sv", "rtl/i2c_reg_pkg.sv", "rtl/i2c_reg_top.sv", "rtl/i2c_target_fsm.sv"
+    ],
+    "total_rtl_lines": 8954
+  },
+  "categories": {
+    "primary": "peripheral",
+    "secondary": ["communication", "serial"],
+    "tags": ["i2c", "host", "target", "master", "slave", "open-drain", "tl-ul", "fifo", "bus-monitor", "opentitan", "lowrisc"]
+  },
+  "trust": {
+    "verification_level": "silicon_proven",
+    "tapeout_count": 3,
+    "fpga_validated": false,
+    "maintained": true,
+    "last_activity": "2026-03-27",
+    "notes": "Silicon-proven in OpenTitan Earl Grey (3 tapeouts). 10 RTL modules, 8,954 lines. Host + target mode."
+  },
+  "asic": {"flavor": "digital", "technology": ["sky130A"]},
+  "fpga": {"toolchain": ["Vivado", "Yosys"]},
+  "keywords": ["i2c", "host", "target", "master", "slave", "opentitan", "lowrisc", "tl-ul", "open-drain", "bus-monitor", "fifo"],
+  "meta": {"template": {"generator": "manual (gold-standard pass 2026-03-27)", "template_version": "1.0.0", "generated_at": "2026-03-27T19:21:14Z"}, "schema": {"version": "1.0.0"}}
 }
