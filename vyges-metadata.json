@@ -14,7 +14,7 @@
     "digital"
   ],
   "created": "2026-03-27T23:05:09Z",
-  "updated": "2026-03-27T23:05:09Z",
+  "updated": "2026-04-02T04:30:00Z",
   "source": {
     "type": "git",
     "url": "https://github.com/lowRISC/opentitan",
@@ -182,5 +182,40 @@
     "schema": {
       "version": "1.0.0"
     }
-  }
+  },
+  "rtl_files": [
+    "rtl/i2c.sv",
+    "rtl/i2c_bus_monitor.sv",
+    "rtl/i2c_controller_fsm.sv",
+    "rtl/i2c_core.sv",
+    "rtl/i2c_fifo_sync_sram_adapter.sv",
+    "rtl/i2c_fifos.sv",
+    "rtl/i2c_pkg.sv",
+    "rtl/i2c_reg_pkg.sv",
+    "rtl/i2c_reg_top.sv",
+    "rtl/i2c_target_fsm.sv",
+    "rtl/i2c.sv",
+    "rtl/i2c_bus_monitor.sv",
+    "rtl/i2c_controller_fsm.sv",
+    "rtl/i2c_core.sv",
+    "rtl/i2c_fifo_sync_sram_adapter.sv",
+    "rtl/i2c_fifos.sv",
+    "rtl/i2c_pkg.sv",
+    "rtl/i2c_reg_pkg.sv",
+    "rtl/i2c_reg_top.sv",
+    "rtl/i2c_target_fsm.sv"
+  ],
+  "rtl_quality": {
+    "module_prefixed": true,
+    "defines_prefixed": true,
+    "header_guards": false,
+    "one_module_per_file": true,
+    "self_contained_includes": false,
+    "no_translate_pragmas": true,
+    "lint_clean": false,
+    "no_casex": true,
+    "width_clean": false,
+    "no_sv_keyword_conflicts": true
+  },
+  "defines": []
 }
