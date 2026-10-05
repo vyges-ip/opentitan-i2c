@@ -204,7 +204,9 @@ module i2c_reg_top
   logic intr_test_unexp_stop_wd;
   logic intr_test_host_timeout_wd;
   logic alert_test_we;
-  logic alert_test_wd;
+  logic alert_test_fatal_fault_wd;
+  logic alert_test_regwen_qs;
+  logic alert_test_regwen_wd;
   logic ctrl_we;
   logic ctrl_enablehost_qs;
   logic ctrl_enablehost_wd;
@@ -369,6 +371,7 @@ module i2c_reg_top
   ) u_intr_state_fmt_threshold (
     .clk_i   (clk_i),
     .rst_ni  (rst_ni),
+    .reinit_i(1'b0),
 
     // from register interface
     .we     (1'b0),
@@ -396,6 +399,7 @@ module i2c_reg_top
   ) u_intr_state_rx_threshold (
     .clk_i   (clk_i),
     .rst_ni  (rst_ni),
+    .reinit_i(1'b0),
 
     // from register interface
     .we     (1'b0),
@@ -423,6 +427,7 @@ module i2c_reg_top
   ) u_intr_state_acq_threshold (
     .clk_i   (clk_i),
     .rst_ni  (rst_ni),
+    .reinit_i(1'b0),
 
     // from register interface
     .we     (1'b0),
@@ -450,6 +455,7 @@ module i2c_reg_top
   ) u_intr_state_rx_overflow (
     .clk_i   (clk_i),
     .rst_ni  (rst_ni),
+    .reinit_i(1'b0),
 
     // from register interface
     .we     (intr_state_we),
@@ -477,6 +483,7 @@ module i2c_reg_top
   ) u_intr_state_controller_halt (
     .clk_i   (clk_i),
     .rst_ni  (rst_ni),
+    .reinit_i(1'b0),
 
     // from register interface
     .we     (1'b0),
@@ -504,6 +511,7 @@ module i2c_reg_top
   ) u_intr_state_scl_interference (
     .clk_i   (clk_i),
     .rst_ni  (rst_ni),
+    .reinit_i(1'b0),
 
     // from register interface
     .we     (intr_state_we),
@@ -531,6 +539,7 @@ module i2c_reg_top
   ) u_intr_state_sda_interference (
     .clk_i   (clk_i),
     .rst_ni  (rst_ni),
+    .reinit_i(1'b0),
 
     // from register interface
     .we     (intr_state_we),
@@ -558,6 +567,7 @@ module i2c_reg_top
   ) u_intr_state_stretch_timeout (
     .clk_i   (clk_i),
     .rst_ni  (rst_ni),
+    .reinit_i(1'b0),
 
     // from register interface
     .we     (intr_state_we),
@@ -585,6 +595,7 @@ module i2c_reg_top
   ) u_intr_state_sda_unstable (
     .clk_i   (clk_i),
     .rst_ni  (rst_ni),
+    .reinit_i(1'b0),
 
     // from register interface
     .we     (intr_state_we),
@@ -612,6 +623,7 @@ module i2c_reg_top
   ) u_intr_state_cmd_complete (
     .clk_i   (clk_i),
     .rst_ni  (rst_ni),
+    .reinit_i(1'b0),
 
     // from register interface
     .we     (intr_state_we),
@@ -639,6 +651,7 @@ module i2c_reg_top
   ) u_intr_state_tx_stretch (
     .clk_i   (clk_i),
     .rst_ni  (rst_ni),
+    .reinit_i(1'b0),
 
     // from register interface
     .we     (1'b0),
@@ -666,6 +679,7 @@ module i2c_reg_top
   ) u_intr_state_tx_threshold (
     .clk_i   (clk_i),
     .rst_ni  (rst_ni),
+    .reinit_i(1'b0),
 
     // from register interface
     .we     (1'b0),
@@ -693,6 +707,7 @@ module i2c_reg_top
   ) u_intr_state_acq_stretch (
     .clk_i   (clk_i),
     .rst_ni  (rst_ni),
+    .reinit_i(1'b0),
 
     // from register interface
     .we     (1'b0),
@@ -720,6 +735,7 @@ module i2c_reg_top
   ) u_intr_state_unexp_stop (
     .clk_i   (clk_i),
     .rst_ni  (rst_ni),
+    .reinit_i(1'b0),
 
     // from register interface
     .we     (intr_state_we),
@@ -747,6 +763,7 @@ module i2c_reg_top
   ) u_intr_state_host_timeout (
     .clk_i   (clk_i),
     .rst_ni  (rst_ni),
+    .reinit_i(1'b0),
 
     // from register interface
     .we     (intr_state_we),
@@ -776,6 +793,7 @@ module i2c_reg_top
   ) u_intr_enable_fmt_threshold (
     .clk_i   (clk_i),
     .rst_ni  (rst_ni),
+    .reinit_i(1'b0),
 
     // from register interface
     .we     (intr_enable_we),
@@ -803,6 +821,7 @@ module i2c_reg_top
   ) u_intr_enable_rx_threshold (
     .clk_i   (clk_i),
     .rst_ni  (rst_ni),
+    .reinit_i(1'b0),
 
     // from register interface
     .we     (intr_enable_we),
@@ -830,6 +849,7 @@ module i2c_reg_top
   ) u_intr_enable_acq_threshold (
     .clk_i   (clk_i),
     .rst_ni  (rst_ni),
+    .reinit_i(1'b0),
 
     // from register interface
     .we     (intr_enable_we),
@@ -857,6 +877,7 @@ module i2c_reg_top
   ) u_intr_enable_rx_overflow (
     .clk_i   (clk_i),
     .rst_ni  (rst_ni),
+    .reinit_i(1'b0),
 
     // from register interface
     .we     (intr_enable_we),
@@ -884,6 +905,7 @@ module i2c_reg_top
   ) u_intr_enable_controller_halt (
     .clk_i   (clk_i),
     .rst_ni  (rst_ni),
+    .reinit_i(1'b0),
 
     // from register interface
     .we     (intr_enable_we),
@@ -911,6 +933,7 @@ module i2c_reg_top
   ) u_intr_enable_scl_interference (
     .clk_i   (clk_i),
     .rst_ni  (rst_ni),
+    .reinit_i(1'b0),
 
     // from register interface
     .we     (intr_enable_we),
@@ -938,6 +961,7 @@ module i2c_reg_top
   ) u_intr_enable_sda_interference (
     .clk_i   (clk_i),
     .rst_ni  (rst_ni),
+    .reinit_i(1'b0),
 
     // from register interface
     .we     (intr_enable_we),
@@ -965,6 +989,7 @@ module i2c_reg_top
   ) u_intr_enable_stretch_timeout (
     .clk_i   (clk_i),
     .rst_ni  (rst_ni),
+    .reinit_i(1'b0),
 
     // from register interface
     .we     (intr_enable_we),
@@ -992,6 +1017,7 @@ module i2c_reg_top
   ) u_intr_enable_sda_unstable (
     .clk_i   (clk_i),
     .rst_ni  (rst_ni),
+    .reinit_i(1'b0),
 
     // from register interface
     .we     (intr_enable_we),
@@ -1019,6 +1045,7 @@ module i2c_reg_top
   ) u_intr_enable_cmd_complete (
     .clk_i   (clk_i),
     .rst_ni  (rst_ni),
+    .reinit_i(1'b0),
 
     // from register interface
     .we     (intr_enable_we),
@@ -1046,6 +1073,7 @@ module i2c_reg_top
   ) u_intr_enable_tx_stretch (
     .clk_i   (clk_i),
     .rst_ni  (rst_ni),
+    .reinit_i(1'b0),
 
     // from register interface
     .we     (intr_enable_we),
@@ -1073,6 +1101,7 @@ module i2c_reg_top
   ) u_intr_enable_tx_threshold (
     .clk_i   (clk_i),
     .rst_ni  (rst_ni),
+    .reinit_i(1'b0),
 
     // from register interface
     .we     (intr_enable_we),
@@ -1100,6 +1129,7 @@ module i2c_reg_top
   ) u_intr_enable_acq_stretch (
     .clk_i   (clk_i),
     .rst_ni  (rst_ni),
+    .reinit_i(1'b0),
 
     // from register interface
     .we     (intr_enable_we),
@@ -1127,6 +1157,7 @@ module i2c_reg_top
   ) u_intr_enable_unexp_stop (
     .clk_i   (clk_i),
     .rst_ni  (rst_ni),
+    .reinit_i(1'b0),
 
     // from register interface
     .we     (intr_enable_we),
@@ -1154,6 +1185,7 @@ module i2c_reg_top
   ) u_intr_enable_host_timeout (
     .clk_i   (clk_i),
     .rst_ni  (rst_ni),
+    .reinit_i(1'b0),
 
     // from register interface
     .we     (intr_enable_we),
@@ -1420,14 +1452,18 @@ module i2c_reg_top
 
   // R[alert_test]: V(True)
   logic alert_test_qe;
-  logic [0:0] alert_test_flds_we;
+  logic [1:0] alert_test_flds_we;
   assign alert_test_qe = &alert_test_flds_we;
+  // Create REGWEN-gated WE signal
+  logic alert_test_gated_we;
+  assign alert_test_gated_we = alert_test_we && alert_test_regwen_qs;
+  //   F[fatal_fault]: 0:0
   prim_subreg_ext #(
     .DW    (1)
-  ) u_alert_test (
+  ) u_alert_test_fatal_fault (
     .re     (1'b0),
-    .we     (alert_test_we),
-    .wd     (alert_test_wd),
+    .we     (alert_test_gated_we),
+    .wd     (alert_test_fatal_fault_wd),
     .d      ('0),
     .qre    (),
     .qe     (alert_test_flds_we[0]),
@@ -1436,6 +1472,34 @@ module i2c_reg_top
     .qs     ()
   );
   assign reg2hw.alert_test.qe = alert_test_qe;
+
+  //   F[regwen]: 31:31
+  prim_subreg #(
+    .DW      (1),
+    .SwAccess(prim_subreg_pkg::SwAccessW0C),
+    .RESVAL  (1'h1),
+    .Mubi    (1'b0)
+  ) u_alert_test_regwen (
+    .clk_i   (clk_i),
+    .rst_ni  (rst_ni),
+    .reinit_i(1'b0),
+
+    // from register interface
+    .we     (alert_test_we),
+    .wd     (alert_test_regwen_wd),
+
+    // from internal hardware
+    .de     (1'b0),
+    .d      ('0),
+
+    // to internal hardware
+    .qe     (alert_test_flds_we[1]),
+    .q      (),
+    .ds     (),
+
+    // to register interface (read)
+    .qs     (alert_test_regwen_qs)
+  );
 
 
   // R[ctrl]: V(False)
@@ -1448,6 +1512,7 @@ module i2c_reg_top
   ) u_ctrl_enablehost (
     .clk_i   (clk_i),
     .rst_ni  (rst_ni),
+    .reinit_i(1'b0),
 
     // from register interface
     .we     (ctrl_we),
@@ -1475,6 +1540,7 @@ module i2c_reg_top
   ) u_ctrl_enabletarget (
     .clk_i   (clk_i),
     .rst_ni  (rst_ni),
+    .reinit_i(1'b0),
 
     // from register interface
     .we     (ctrl_we),
@@ -1502,6 +1568,7 @@ module i2c_reg_top
   ) u_ctrl_llpbk (
     .clk_i   (clk_i),
     .rst_ni  (rst_ni),
+    .reinit_i(1'b0),
 
     // from register interface
     .we     (ctrl_we),
@@ -1529,6 +1596,7 @@ module i2c_reg_top
   ) u_ctrl_nack_addr_after_timeout (
     .clk_i   (clk_i),
     .rst_ni  (rst_ni),
+    .reinit_i(1'b0),
 
     // from register interface
     .we     (ctrl_we),
@@ -1556,6 +1624,7 @@ module i2c_reg_top
   ) u_ctrl_ack_ctrl_en (
     .clk_i   (clk_i),
     .rst_ni  (rst_ni),
+    .reinit_i(1'b0),
 
     // from register interface
     .we     (ctrl_we),
@@ -1583,6 +1652,7 @@ module i2c_reg_top
   ) u_ctrl_multi_controller_monitor_en (
     .clk_i   (clk_i),
     .rst_ni  (rst_ni),
+    .reinit_i(1'b0),
 
     // from register interface
     .we     (ctrl_we),
@@ -1610,6 +1680,7 @@ module i2c_reg_top
   ) u_ctrl_tx_stretch_ctrl_en (
     .clk_i   (clk_i),
     .rst_ni  (rst_ni),
+    .reinit_i(1'b0),
 
     // from register interface
     .we     (ctrl_we),
@@ -1833,6 +1904,7 @@ module i2c_reg_top
   ) u_fdata_fbyte (
     .clk_i   (clk_i),
     .rst_ni  (rst_ni),
+    .reinit_i(1'b0),
 
     // from register interface
     .we     (fdata_we),
@@ -1861,6 +1933,7 @@ module i2c_reg_top
   ) u_fdata_start (
     .clk_i   (clk_i),
     .rst_ni  (rst_ni),
+    .reinit_i(1'b0),
 
     // from register interface
     .we     (fdata_we),
@@ -1889,6 +1962,7 @@ module i2c_reg_top
   ) u_fdata_stop (
     .clk_i   (clk_i),
     .rst_ni  (rst_ni),
+    .reinit_i(1'b0),
 
     // from register interface
     .we     (fdata_we),
@@ -1917,6 +1991,7 @@ module i2c_reg_top
   ) u_fdata_readb (
     .clk_i   (clk_i),
     .rst_ni  (rst_ni),
+    .reinit_i(1'b0),
 
     // from register interface
     .we     (fdata_we),
@@ -1945,6 +2020,7 @@ module i2c_reg_top
   ) u_fdata_rcont (
     .clk_i   (clk_i),
     .rst_ni  (rst_ni),
+    .reinit_i(1'b0),
 
     // from register interface
     .we     (fdata_we),
@@ -1973,6 +2049,7 @@ module i2c_reg_top
   ) u_fdata_nakok (
     .clk_i   (clk_i),
     .rst_ni  (rst_ni),
+    .reinit_i(1'b0),
 
     // from register interface
     .we     (fdata_we),
@@ -2014,6 +2091,7 @@ module i2c_reg_top
   ) u_fifo_ctrl_rxrst (
     .clk_i   (clk_i),
     .rst_ni  (rst_ni),
+    .reinit_i(1'b0),
 
     // from register interface
     .we     (fifo_ctrl_we),
@@ -2042,6 +2120,7 @@ module i2c_reg_top
   ) u_fifo_ctrl_fmtrst (
     .clk_i   (clk_i),
     .rst_ni  (rst_ni),
+    .reinit_i(1'b0),
 
     // from register interface
     .we     (fifo_ctrl_we),
@@ -2070,6 +2149,7 @@ module i2c_reg_top
   ) u_fifo_ctrl_acqrst (
     .clk_i   (clk_i),
     .rst_ni  (rst_ni),
+    .reinit_i(1'b0),
 
     // from register interface
     .we     (fifo_ctrl_we),
@@ -2098,6 +2178,7 @@ module i2c_reg_top
   ) u_fifo_ctrl_txrst (
     .clk_i   (clk_i),
     .rst_ni  (rst_ni),
+    .reinit_i(1'b0),
 
     // from register interface
     .we     (fifo_ctrl_we),
@@ -2139,6 +2220,7 @@ module i2c_reg_top
   ) u_host_fifo_config_rx_thresh (
     .clk_i   (clk_i),
     .rst_ni  (rst_ni),
+    .reinit_i(1'b0),
 
     // from register interface
     .we     (host_fifo_config_we),
@@ -2167,6 +2249,7 @@ module i2c_reg_top
   ) u_host_fifo_config_fmt_thresh (
     .clk_i   (clk_i),
     .rst_ni  (rst_ni),
+    .reinit_i(1'b0),
 
     // from register interface
     .we     (host_fifo_config_we),
@@ -2208,6 +2291,7 @@ module i2c_reg_top
   ) u_target_fifo_config_tx_thresh (
     .clk_i   (clk_i),
     .rst_ni  (rst_ni),
+    .reinit_i(1'b0),
 
     // from register interface
     .we     (target_fifo_config_we),
@@ -2236,6 +2320,7 @@ module i2c_reg_top
   ) u_target_fifo_config_acq_thresh (
     .clk_i   (clk_i),
     .rst_ni  (rst_ni),
+    .reinit_i(1'b0),
 
     // from register interface
     .we     (target_fifo_config_we),
@@ -2330,6 +2415,7 @@ module i2c_reg_top
   ) u_ovrd_txovrden (
     .clk_i   (clk_i),
     .rst_ni  (rst_ni),
+    .reinit_i(1'b0),
 
     // from register interface
     .we     (ovrd_we),
@@ -2357,6 +2443,7 @@ module i2c_reg_top
   ) u_ovrd_sclval (
     .clk_i   (clk_i),
     .rst_ni  (rst_ni),
+    .reinit_i(1'b0),
 
     // from register interface
     .we     (ovrd_we),
@@ -2384,6 +2471,7 @@ module i2c_reg_top
   ) u_ovrd_sdaval (
     .clk_i   (clk_i),
     .rst_ni  (rst_ni),
+    .reinit_i(1'b0),
 
     // from register interface
     .we     (ovrd_we),
@@ -2445,6 +2533,7 @@ module i2c_reg_top
   ) u_timing0_thigh (
     .clk_i   (clk_i),
     .rst_ni  (rst_ni),
+    .reinit_i(1'b0),
 
     // from register interface
     .we     (timing0_we),
@@ -2472,6 +2561,7 @@ module i2c_reg_top
   ) u_timing0_tlow (
     .clk_i   (clk_i),
     .rst_ni  (rst_ni),
+    .reinit_i(1'b0),
 
     // from register interface
     .we     (timing0_we),
@@ -2501,6 +2591,7 @@ module i2c_reg_top
   ) u_timing1_t_r (
     .clk_i   (clk_i),
     .rst_ni  (rst_ni),
+    .reinit_i(1'b0),
 
     // from register interface
     .we     (timing1_we),
@@ -2528,6 +2619,7 @@ module i2c_reg_top
   ) u_timing1_t_f (
     .clk_i   (clk_i),
     .rst_ni  (rst_ni),
+    .reinit_i(1'b0),
 
     // from register interface
     .we     (timing1_we),
@@ -2557,6 +2649,7 @@ module i2c_reg_top
   ) u_timing2_tsu_sta (
     .clk_i   (clk_i),
     .rst_ni  (rst_ni),
+    .reinit_i(1'b0),
 
     // from register interface
     .we     (timing2_we),
@@ -2584,6 +2677,7 @@ module i2c_reg_top
   ) u_timing2_thd_sta (
     .clk_i   (clk_i),
     .rst_ni  (rst_ni),
+    .reinit_i(1'b0),
 
     // from register interface
     .we     (timing2_we),
@@ -2613,6 +2707,7 @@ module i2c_reg_top
   ) u_timing3_tsu_dat (
     .clk_i   (clk_i),
     .rst_ni  (rst_ni),
+    .reinit_i(1'b0),
 
     // from register interface
     .we     (timing3_we),
@@ -2640,6 +2735,7 @@ module i2c_reg_top
   ) u_timing3_thd_dat (
     .clk_i   (clk_i),
     .rst_ni  (rst_ni),
+    .reinit_i(1'b0),
 
     // from register interface
     .we     (timing3_we),
@@ -2669,6 +2765,7 @@ module i2c_reg_top
   ) u_timing4_tsu_sto (
     .clk_i   (clk_i),
     .rst_ni  (rst_ni),
+    .reinit_i(1'b0),
 
     // from register interface
     .we     (timing4_we),
@@ -2696,6 +2793,7 @@ module i2c_reg_top
   ) u_timing4_t_buf (
     .clk_i   (clk_i),
     .rst_ni  (rst_ni),
+    .reinit_i(1'b0),
 
     // from register interface
     .we     (timing4_we),
@@ -2725,6 +2823,7 @@ module i2c_reg_top
   ) u_timeout_ctrl_val (
     .clk_i   (clk_i),
     .rst_ni  (rst_ni),
+    .reinit_i(1'b0),
 
     // from register interface
     .we     (timeout_ctrl_we),
@@ -2752,6 +2851,7 @@ module i2c_reg_top
   ) u_timeout_ctrl_mode (
     .clk_i   (clk_i),
     .rst_ni  (rst_ni),
+    .reinit_i(1'b0),
 
     // from register interface
     .we     (timeout_ctrl_we),
@@ -2779,6 +2879,7 @@ module i2c_reg_top
   ) u_timeout_ctrl_en (
     .clk_i   (clk_i),
     .rst_ni  (rst_ni),
+    .reinit_i(1'b0),
 
     // from register interface
     .we     (timeout_ctrl_we),
@@ -2808,6 +2909,7 @@ module i2c_reg_top
   ) u_target_id_address0 (
     .clk_i   (clk_i),
     .rst_ni  (rst_ni),
+    .reinit_i(1'b0),
 
     // from register interface
     .we     (target_id_we),
@@ -2835,6 +2937,7 @@ module i2c_reg_top
   ) u_target_id_mask0 (
     .clk_i   (clk_i),
     .rst_ni  (rst_ni),
+    .reinit_i(1'b0),
 
     // from register interface
     .we     (target_id_we),
@@ -2862,6 +2965,7 @@ module i2c_reg_top
   ) u_target_id_address1 (
     .clk_i   (clk_i),
     .rst_ni  (rst_ni),
+    .reinit_i(1'b0),
 
     // from register interface
     .we     (target_id_we),
@@ -2889,6 +2993,7 @@ module i2c_reg_top
   ) u_target_id_mask1 (
     .clk_i   (clk_i),
     .rst_ni  (rst_ni),
+    .reinit_i(1'b0),
 
     // from register interface
     .we     (target_id_we),
@@ -2960,6 +3065,7 @@ module i2c_reg_top
   ) u_txdata (
     .clk_i   (clk_i),
     .rst_ni  (rst_ni),
+    .reinit_i(1'b0),
 
     // from register interface
     .we     (txdata_we),
@@ -2989,6 +3095,7 @@ module i2c_reg_top
   ) u_host_timeout_ctrl (
     .clk_i   (clk_i),
     .rst_ni  (rst_ni),
+    .reinit_i(1'b0),
 
     // from register interface
     .we     (host_timeout_ctrl_we),
@@ -3018,6 +3125,7 @@ module i2c_reg_top
   ) u_target_timeout_ctrl_val (
     .clk_i   (clk_i),
     .rst_ni  (rst_ni),
+    .reinit_i(1'b0),
 
     // from register interface
     .we     (target_timeout_ctrl_we),
@@ -3045,6 +3153,7 @@ module i2c_reg_top
   ) u_target_timeout_ctrl_en (
     .clk_i   (clk_i),
     .rst_ni  (rst_ni),
+    .reinit_i(1'b0),
 
     // from register interface
     .we     (target_timeout_ctrl_we),
@@ -3073,6 +3182,7 @@ module i2c_reg_top
   ) u_target_nack_count (
     .clk_i   (clk_i),
     .rst_ni  (rst_ni),
+    .reinit_i(1'b0),
 
     // from register interface
     .we     (target_nack_count_re),
@@ -3155,6 +3265,7 @@ module i2c_reg_top
   ) u_host_nack_handler_timeout_val (
     .clk_i   (clk_i),
     .rst_ni  (rst_ni),
+    .reinit_i(1'b0),
 
     // from register interface
     .we     (host_nack_handler_timeout_we),
@@ -3182,6 +3293,7 @@ module i2c_reg_top
   ) u_host_nack_handler_timeout_en (
     .clk_i   (clk_i),
     .rst_ni  (rst_ni),
+    .reinit_i(1'b0),
 
     // from register interface
     .we     (host_nack_handler_timeout_we),
@@ -3211,6 +3323,7 @@ module i2c_reg_top
   ) u_controller_events_nack (
     .clk_i   (clk_i),
     .rst_ni  (rst_ni),
+    .reinit_i(1'b0),
 
     // from register interface
     .we     (controller_events_we),
@@ -3238,6 +3351,7 @@ module i2c_reg_top
   ) u_controller_events_unhandled_nack_timeout (
     .clk_i   (clk_i),
     .rst_ni  (rst_ni),
+    .reinit_i(1'b0),
 
     // from register interface
     .we     (controller_events_we),
@@ -3265,6 +3379,7 @@ module i2c_reg_top
   ) u_controller_events_bus_timeout (
     .clk_i   (clk_i),
     .rst_ni  (rst_ni),
+    .reinit_i(1'b0),
 
     // from register interface
     .we     (controller_events_we),
@@ -3292,6 +3407,7 @@ module i2c_reg_top
   ) u_controller_events_arbitration_lost (
     .clk_i   (clk_i),
     .rst_ni  (rst_ni),
+    .reinit_i(1'b0),
 
     // from register interface
     .we     (controller_events_we),
@@ -3321,6 +3437,7 @@ module i2c_reg_top
   ) u_target_events_tx_pending (
     .clk_i   (clk_i),
     .rst_ni  (rst_ni),
+    .reinit_i(1'b0),
 
     // from register interface
     .we     (target_events_we),
@@ -3348,6 +3465,7 @@ module i2c_reg_top
   ) u_target_events_bus_timeout (
     .clk_i   (clk_i),
     .rst_ni  (rst_ni),
+    .reinit_i(1'b0),
 
     // from register interface
     .we     (target_events_we),
@@ -3375,6 +3493,7 @@ module i2c_reg_top
   ) u_target_events_arbitration_lost (
     .clk_i   (clk_i),
     .rst_ni  (rst_ni),
+    .reinit_i(1'b0),
 
     // from register interface
     .we     (target_events_we),
@@ -3604,7 +3723,9 @@ module i2c_reg_top
   assign intr_test_host_timeout_wd = reg_wdata[14];
   assign alert_test_we = racl_addr_hit_write[3] & reg_we & !reg_error;
 
-  assign alert_test_wd = reg_wdata[0];
+  assign alert_test_fatal_fault_wd = reg_wdata[0];
+
+  assign alert_test_regwen_wd = reg_wdata[31];
   assign ctrl_we = racl_addr_hit_write[4] & reg_we & !reg_error;
 
   assign ctrl_enablehost_wd = reg_wdata[0];
@@ -3845,6 +3966,7 @@ module i2c_reg_top
 
       racl_addr_hit_read[3]: begin
         reg_rdata_next[0] = '0;
+        reg_rdata_next[31] = alert_test_regwen_qs;
       end
 
       racl_addr_hit_read[4]: begin
